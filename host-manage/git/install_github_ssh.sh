@@ -4,8 +4,14 @@
 # 支持多仓库多密钥管理
 
 # 输入参数处理
-read -p "📦 请输入GitHub仓库地址（支持SSH/HTTPS格式）: " REPO_URL
-read -p "🔑 输入密钥名称（默认：github_ed25519）: " KEY_NAME
+if ! read -t 30 -p "📦 请输入GitHub仓库地址（支持SSH/HTTPS格式）: " REPO_URL; then
+    echo -e "\n❌ 输入超时"
+    exit 1
+fi
+if ! read -t 30 -p "🔑 输入密钥名称（默认：github_ed25519）: " KEY_NAME; then
+    echo -e "\n❌ 输入超时"
+    exit 1
+fi
 KEY_NAME=${KEY_NAME:-github_ed25519}
 KEY_PATH="$HOME/.ssh/${KEY_NAME}"
 
@@ -49,7 +55,10 @@ fi
 # 打开浏览器添加密钥
 xdg-open "https://github.com/settings/keys" &> /dev/null || open "https://github.com/settings/keys" &> /dev/null
 
-read -p "⏳ 请确保已添加公钥到GitHub，按回车继续..."
+if ! read -t 30 -p "⏳ 请确保已添加公钥到GitHub，按回车继续..."; then
+    echo -e "\n❌ 输入超时"
+    exit 1
+fi
 
 # 配置SSH config
 CONFIG_FILE="$HOME/.ssh/config"
